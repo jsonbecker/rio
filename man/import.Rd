@@ -2,11 +2,12 @@
 \alias{import}
 \title{Read data.frame or matrix from a file}
 \usage{
-    import(file, format, ...)
+    import(file, format, fastread = TRUE, ...)
 }
 \arguments{
     \item{file}{A character string naming a file, URL, or single-file .zip or .tar archive.}
     \item{format}{An optional character string code of file format, which can be used to override the format inferred from \code{file}. Shortcuts include: \dQuote{,} (for comma-separated values), \dQuote{;} (for semicolon-separated values), and \dQuote{|} (for pipe-separated values).}
+    \item{fastread}{A logical (default is \code{TRUE}) specifying whether to use \code{\link[fastread]{read_delim}} for delimited text files. If \code{FALSE}, \code{\link[utils]{read.table}} is used.}
     \item{...}{Additional arguments for the underlying import functions.}
 }
 \value{An R data.frame.}
@@ -37,14 +38,4 @@
 }
 }
 \note{For csv and txt files with row names exported from \code{\link{export}}, it may be helpful to specify \code{row.names} as the column of the table which contain row names. See example below.}
-\examples{
-
-# rownames in exported file
-export(iris, "myIris.csv", row.names = TRUE)
-iris2 <- import("myIris.csv") # with the additional spurious column
-head(iris2)
-iris3 <- import("myIris.csv", row.names = 1)
-head(iris3)
-
-identical(iris3, iris3)
-}
+%\examples{}

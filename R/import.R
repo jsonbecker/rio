@@ -50,11 +50,20 @@ import.rdata <- function(file, ...) {
     get(ls(e)[1], e) # return first object from a .Rdata
 }
 
-import <- function(file, format, ...) {
+import <- function(file, format, fastread = TRUE, ...) {
     if(missing(format))
         fmt <- get_ext(file)
     else
         fmt <- tolower(format)
+    if(fastread) {
+        fmt <- switch(fmt, 
+                      txt = "fasttxt",
+                      tsv = "fasttsv",
+                      csv = "fastcsv",
+                      csv2 = "fastcsv2",
+                      psv = "fastpsv",
+                      fmt)
+    }
     if(grepl("^https://", file)) {
         temp_file <- tempfile(fileext = fmt)
         on.exit(unlink(temp_file))
@@ -70,6 +79,11 @@ import <- function(file, format, ...) {
                 csv = import.delim(file = file, sep = ",", ...),
                 csv2 = import.delim(file = file, sep = ";", dec = ",", ...),
                 psv = import.delim(file = file, sep = "|", ...),
+                fasttxt = read_delim(file = file, ...), # guess delimiter
+                fasttsv = read_delim(file = file, delim = "\t", ...),
+                fastcsv = read_delim(file = file, delim = ",", ...),
+                fastcsv2 = read_delim(file = file, delim = ";", ...),
+                fastpsv = read_delim(file = file, delim = "|", ...),
                 rdata = import.rdata(file = file, ...),
                 dta = read_dta(path = file),
                 dbf = read.dbf(file = file, ...),
